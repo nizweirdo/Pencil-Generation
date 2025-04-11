@@ -3,6 +3,7 @@ let pixelData = [];
 let minSlider, maxSlider, densitySlider;
 let canvas;
 const MARGIN = 40;
+let bgColor = '#191916';
 
 function setup() {
   canvas = createCanvas(windowWidth - MARGIN * 2, windowHeight - MARGIN * 2);
@@ -18,7 +19,7 @@ function setup() {
   densitySlider.addEventListener('input', drawStrokes);
 
   document.getElementById('imgInput').addEventListener('change', handleImageUpload);
-  document.getElementById('exportBtn').addEventListener('click', () => saveCanvas('myCanvas', 'png'));
+  document.getElementById('exportBtn').addEventListener('click', exportTransparentPNG);
 }
 
 function handleImageUpload(e) {
@@ -70,6 +71,58 @@ function imgLoaded(loadedImage) {
 
 function drawStrokes() {
   clear();
+  background(bgColor);
+  if (!img) return;
+
+  let offsetX = (width - img.width) / 2;
+  let offsetY = (height - img.height) / 2;
+
+  let minLen = parseInt(minSlider.value);
+  let maxLen = parseInt(maxSlider.value);
+  let density = parseInt(densitySlider.value) / 100;
+
+  const numToDraw = int(density * pixelData.length);
+  for (let i = 0; i < numToDraw; i++) {
+    let p = random(pixelData);
+    let col = color(p.r, p.g, p.b);
+    let h = hue(col);
+
+    let baseAngle = map(h, 0, 360, 0, TWO_PI);
+    let angle = baseAngle + random(-PI / 6, PI / 6);
+
+    let len = random(minLen, maxLen);
+    let cx = p.x + offsetX;
+    let cy = p.y + offsetY;
+
+    let x1 = cx - cos(angle) * len / 2;
+    let y1 = cy - sin(angle) * len / 2;
+    let x2 = cx + cos(angle) * len / 2;
+    let y2 = cy + sin(angle) * len / 2;
+
+    stroke(col);
+    strokeWeight(1);
+    noFill();
+
+    if (random(1) < 0.5) {
+      line(x1, y1, x2, y2);
+    } else {
+      let ctrlX = (x1 + x2) / 2 + random(-10, 10);
+      let ctrlY = (y1 + y2) / 2 + random(-10, 10);
+      bezier(x1, y1, ctrlX, ctrlY, ctrlX, ctrlY, x2, y2);
+    }
+  }
+}
+
+function exportTransparentPNG() {
+  // Temporarily clear background to make export transparent
+  clear(); // clears with alpha
+  if (img) drawStrokesWithoutBackground();
+  saveCanvas('myCanvas', 'png');
+  // Redraw with visible background
+  drawStrokes();
+}
+
+function drawStrokesWithoutBackground() {
   if (!img) return;
 
   let offsetX = (width - img.width) / 2;

@@ -2,54 +2,24 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Image Stroke Tool</title>
-  <style>
-    body {
-      margin: 0;
-      background: #f0f0f0;
-      font-family: sans-serif;
-    }
-
-    #controls {
-      position: fixed;
-      top: 10px;
-      left: 10px;
-      background: white;
-      padding: 15px;
-      border-radius: 10px;
-      box-shadow: 0 2px 5px rgba(0,0,0,0.2);
-      z-index: 10;
-    }
-
-    label {
-      font-size: 14px;
-      display: block;
-      margin-top: 10px;
-    }
-
-    input[type="range"] {
-      width: 200px;
-    }
-
-    canvas {
-      display: block;
-      margin: auto;
-    }
-  </style>
+  <link rel="stylesheet" href="styles.css" /> <!-- Link to external CSS file -->
 </head>
 <body>
   <div id="controls">
     <input type="file" id="imgInput" />
     <button id="exportBtn">Export PNG</button>
 
-    <label for="minLength">Min Line Length</label>
+    <label for="density">DENSITY</label>
+    <input type="range" id="density" min="0" max="100" value="90">
+
+    <label for="minLength">MIN LENGTH</label>
     <input type="range" id="minLength" min="5" max="30" value="10">
 
-    <label for="maxLength">Max Line Length</label>
+    <label for="maxLength">MAX LENGTH</label>
     <input type="range" id="maxLength" min="30" max="100" value="50">
 
-    <label for="density">Density</label>
-    <input type="range" id="density" min="0" max="100" value="90">
   </div>
 
   <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.9.0/p5.min.js"></script>
