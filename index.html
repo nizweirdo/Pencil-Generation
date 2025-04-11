@@ -1,27 +1,55 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>p5 Image Upload</title>
-    <style>
-      body {
-        margin: 0;
-        padding: 0;
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        height: 100vh;
-        background-color: #f0f0f0;
-      }
-      canvas {
-        margin: 20px; /* Equal margin around the canvas */
-        border: 2px solid #333; /* Optional: border around canvas */
-      }
-    </style>
-  </head>
-  <body>
-    <script src="libraries/p5.min.js"></script>
-    <script src="sketch.js"></script>
-  </body>
+<head>
+  <meta charset="UTF-8" />
+  <title>Image Stroke Tool</title>
+  <style>
+    body {
+      margin: 0;
+      background: #f0f0f0;
+      font-family: sans-serif;
+    }
+
+    #controls {
+      position: fixed;
+      top: 10px;
+      left: 10px;
+      background: white;
+      padding: 15px;
+      border-radius: 10px;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+      z-index: 10;
+    }
+
+    label {
+      font-size: 14px;
+      display: block;
+      margin-top: 10px;
+    }
+
+    input[type="range"] {
+      width: 200px;
+    }
+
+    canvas {
+      display: block;
+      margin: auto;
+    }
+  </style>
+</head>
+<body>
+  <div id="controls">
+    <input type="file" id="imgInput" />
+    <button id="exportBtn">Export PNG</button>
+
+    <label for="minLength">Min Line Length</label>
+    <input type="range" id="minLength" min="5" max="30" value="10">
+
+    <label for="maxLength">Max Line Length</label>
+    <input type="range" id="maxLength" min="30" max="100" value="50">
+  </div>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.9.0/p5.min.js"></script>
+  <script src="sketch.js"></script>
+</body>
 </html>
