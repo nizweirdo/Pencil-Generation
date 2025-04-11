@@ -19,9 +19,20 @@ function setup() {
   curvatureSlider = document.getElementById('curvature');
   curvatureInput = document.getElementById('curvatureInput');
 
+  // Initialize input fields
+  minLengthInput = document.getElementById('minLengthInput');
+  maxLengthInput = document.getElementById('maxLengthInput');
+
   // Add event listeners
-  minSlider.addEventListener('input', drawStrokes);
-  maxSlider.addEventListener('input', drawStrokes);
+  minSlider.addEventListener('input', function() {
+    minLengthInput.value = minSlider.value; // Sync the input field with slider
+    drawStrokes();
+  });
+  maxSlider.addEventListener('input', function() {
+    maxLengthInput.value = maxSlider.value; // Sync the input field with slider
+    drawStrokes();
+  });
+  
   densitySlider.addEventListener('input', function() {
     updateDensityDisplay();
     drawStrokes();
@@ -54,7 +65,20 @@ function setup() {
 
   // Add event listener for export resolution input
   document.getElementById('exportResolutionInput').addEventListener('input', updateExportResolutionDisplay);
+
+  // Add event listeners for number input fields
+  minLengthInput.addEventListener('input', function() {
+    minSlider.value = parseInt(minLengthInput.value); // Sync the slider with the input field
+    drawStrokes();
+  });
+
+  maxLengthInput.addEventListener('input', function() {
+    maxSlider.value = parseInt(maxLengthInput.value); // Sync the slider with the input field
+    drawStrokes();
+  });
 }
+
+
 
 // Function to update the density display
 function updateDensityDisplay() {
@@ -214,6 +238,8 @@ function drawStrokesWithoutBackgroundOnCanvas(higherResCanvas) {
   let minLen = parseInt(minSlider.value);
   let maxLen = parseInt(maxSlider.value);
   let density = parseInt(densitySlider.value) / 100;
+  let angleControl = parseFloat(angleSlider.value);
+  let curvatureControl = parseFloat(curvatureSlider.value); // ✅ Get the real curvature
 
   const numToDraw = int(density * pixelData.length);
   for (let i = 0; i < numToDraw; i++) {
@@ -222,7 +248,7 @@ function drawStrokesWithoutBackgroundOnCanvas(higherResCanvas) {
     let h = hue(col);
 
     let baseAngle = map(h, 0, 360, 0, TWO_PI);
-    let angle = baseAngle + random(-PI / 6, PI / 6);
+    let angle = baseAngle + angleControl; // ✅ Use the actual angleControl
 
     let len = random(minLen, maxLen);
     let cx = p.x + offsetX;
@@ -240,8 +266,8 @@ function drawStrokesWithoutBackgroundOnCanvas(higherResCanvas) {
     if (random(1) < 0.5) {
       higherResCanvas.line(x1, y1, x2, y2);
     } else {
-      let ctrlX = (x1 + x2) / 2 + random(-10, 10);
-      let ctrlY = (y1 + y2) / 2 + random(-10, 10);
+      let ctrlX = (x1 + x2) / 2 + random(-curvatureControl, curvatureControl); // ✅ use real control
+      let ctrlY = (y1 + y2) / 2 + random(-curvatureControl, curvatureControl);
       higherResCanvas.bezier(x1, y1, ctrlX, ctrlY, ctrlX, ctrlY, x2, y2);
     }
   }
