@@ -1,4 +1,3 @@
-/* styles.css */
 body {
     margin: 0;
     background: #191916;
@@ -18,10 +17,28 @@ body {
     border: 2px solid #fff310; /* Yellow stroke around controls box */
   }
   
-  label {
-    font-size: 14px;
-    display: block;
+  .label-group {
     margin-top: 10px;
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+  }
+  
+  .label-text {
+    display: inline-block;
+    background-color: #fff310;
+    color: black;
+    font-size: 14px;
+    font-family: monospace;
+    padding: 5px 10px;
+    border-radius: 5px;
+    width: fit-content;
+  }
+  
+  .slider-group {
+    display: flex;
+    align-items: center; /* Align the slider and input field horizontally */
+    gap: 10px; /* Space between slider and input */
   }
   
   input[type="file"], button {
@@ -36,7 +53,18 @@ body {
     background: #444;
     height: 8px; /* Track height */
     border-radius: 5px;
-    margin: 10px 0; /* Add space between sliders */
+  }
+  
+  input[type="number"] {
+    width: 80px;
+    background-color: #444;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    padding: 5px;
+    text-align: center;
+    font-size: 14px;
+    display: inline-block;
   }
   
   /* Track styles */
@@ -88,5 +116,16 @@ body {
     border: 2px solid #222;
     cursor: pointer;
     border-radius: 50%; /* Makes the thumb circular */
+  }
+  
+  /* Style for the density value display */
+  .slider-display {
+    background-color: #444;
+    color: white;
+    padding: 5px 10px;
+    border-radius: 5px;
+    font-size: 14px;
+    width: 50px;
+    text-align: center;
   }
   

@@ -11,14 +11,30 @@
     <input type="file" id="imgInput" />
     <button id="exportBtn">Export PNG</button>
 
-    <label for="density">DENSITY</label>
-    <input type="range" id="density" min="0" max="100" value="90">
+    <div class="label-group">
+      <span class="label-text">DENSITY</span>
+      <div class="slider-group">
+        <input type="range" id="density" min="0" max="100" value="90">
+        <!-- Display for the density slider -->
+        <span id="densityDisplay" class="slider-display">90</span>
+      </div>
+    </div>
 
-    <label for="minLength">MIN LENGTH</label>
-    <input type="range" id="minLength" min="5" max="30" value="10">
+    <div class="label-group">
+      <span class="label-text">MIN LENGTH</span>
+      <div class="slider-group">
+        <input type="range" id="minLength" min="5" max="30" value="10">
+        <input type="number" id="minLengthInput" value="5" min="1" max="30" />
+      </div>
+    </div>
 
-    <label for="maxLength">MAX LENGTH</label>
-    <input type="range" id="maxLength" min="30" max="100" value="50">
+    <div class="label-group">
+      <span class="label-text">MAX LENGTH</span>
+      <div class="slider-group">
+        <input type="range" id="maxLength" min="30" max="100" value="50">
+        <input type="number" id="maxLengthInput" value="50" min="30" max="100" />
+      </div>
+    </div>
 
   </div>
 

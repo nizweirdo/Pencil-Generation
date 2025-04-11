@@ -16,11 +16,48 @@ function setup() {
 
   minSlider.addEventListener('input', drawStrokes);
   maxSlider.addEventListener('input', drawStrokes);
-  densitySlider.addEventListener('input', drawStrokes);
+  densitySlider.addEventListener('input', function() {
+    updateDensityDisplay();
+    drawStrokes(); // Make sure the strokes are redrawn when density slider changes
+  });
 
   document.getElementById('imgInput').addEventListener('change', handleImageUpload);
   document.getElementById('exportBtn').addEventListener('click', exportTransparentPNG);
 }
+
+// Function to update the density display
+function updateDensityDisplay() {
+  const densityDisplay = document.getElementById('densityDisplay');
+  densityDisplay.textContent = densitySlider.value;
+}
+
+// Initialize the sliders and input fields
+const minLengthSlider = document.getElementById("minLength");
+const maxLengthSlider = document.getElementById("maxLength");
+const minLengthInput = document.getElementById("minLengthInput");
+const maxLengthInput = document.getElementById("maxLengthInput");
+
+// Update the slider min/max values when the input fields change
+minLengthInput.addEventListener("input", function() {
+  const minValue = parseInt(minLengthInput.value);
+  minLengthSlider.min = minValue; // Update the slider's min value
+  minLengthSlider.value = minValue; // Set the slider value to the new min
+});
+
+maxLengthInput.addEventListener("input", function() {
+  const maxValue = parseInt(maxLengthInput.value);
+  maxLengthSlider.max = maxValue; // Update the slider's max value
+  maxLengthSlider.value = maxValue; // Set the slider value to the new max
+});
+
+// Update the input fields when the sliders change
+minLengthSlider.addEventListener("input", function() {
+  minLengthInput.value = minLengthSlider.value; // Update the input to match the slider value
+});
+
+maxLengthSlider.addEventListener("input", function() {
+  maxLengthInput.value = maxLengthSlider.value; // Update the input to match the slider value
+});
 
 function handleImageUpload(e) {
   const file = e.target.files[0];
