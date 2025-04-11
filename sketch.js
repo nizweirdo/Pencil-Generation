@@ -1,6 +1,6 @@
 let img;
 let pixelData = [];
-let minSlider, maxSlider;
+let minSlider, maxSlider, densitySlider;
 let canvas;
 const MARGIN = 40;
 
@@ -11,9 +11,11 @@ function setup() {
 
   minSlider = document.getElementById('minLength');
   maxSlider = document.getElementById('maxLength');
+  densitySlider = document.getElementById('density');
 
   minSlider.addEventListener('input', drawStrokes);
   maxSlider.addEventListener('input', drawStrokes);
+  densitySlider.addEventListener('input', drawStrokes);
 
   document.getElementById('imgInput').addEventListener('change', handleImageUpload);
   document.getElementById('exportBtn').addEventListener('click', () => saveCanvas('myCanvas', 'png'));
@@ -33,7 +35,6 @@ function handleImageUpload(e) {
 function imgLoaded(loadedImage) {
   img = loadedImage;
 
-  // Resize image to fit within canvas, maintain aspect ratio
   const aspect = img.width / img.height;
   const maxW = width;
   const maxH = height;
@@ -50,7 +51,6 @@ function imgLoaded(loadedImage) {
   img.resize(floor(newW), floor(newH));
   img.loadPixels();
 
-  // Store pixel data
   pixelData = [];
   for (let y = 0; y < img.height; y++) {
     for (let x = 0; x < img.width; x++) {
@@ -77,14 +77,14 @@ function drawStrokes() {
 
   let minLen = parseInt(minSlider.value);
   let maxLen = parseInt(maxSlider.value);
+  let density = parseInt(densitySlider.value) / 100;
 
-  const numToDraw = int(0.9 * pixelData.length);
+  const numToDraw = int(density * pixelData.length);
   for (let i = 0; i < numToDraw; i++) {
     let p = random(pixelData);
     let col = color(p.r, p.g, p.b);
     let h = hue(col);
 
-    // Slightly randomized orientation based on hue
     let baseAngle = map(h, 0, 360, 0, TWO_PI);
     let angle = baseAngle + random(-PI / 6, PI / 6);
 
@@ -115,6 +115,6 @@ function windowResized() {
   resizeCanvas(windowWidth - MARGIN * 2, windowHeight - MARGIN * 2);
   canvas.position(MARGIN, MARGIN);
   if (img) {
-    imgLoaded(img); // re-process and redraw
+    imgLoaded(img);
   }
 }
