@@ -1,6 +1,6 @@
 let img;
 let pixelData = [];
-let minSlider, maxSlider, densitySlider;
+let minSlider, maxSlider, densitySlider, angleSlider, angleInput;
 let canvas;
 const MARGIN = 40;
 let bgColor = '#191916';
@@ -10,15 +10,31 @@ function setup() {
   canvas.position(MARGIN, MARGIN);
   noLoop();
 
+  // Initialize sliders
   minSlider = document.getElementById('minLength');
   maxSlider = document.getElementById('maxLength');
   densitySlider = document.getElementById('density');
+  angleSlider = document.getElementById('angle');  // New angle slider
+  angleInput = document.getElementById('angleInput');  // New angle input
 
+  // Add event listeners
   minSlider.addEventListener('input', drawStrokes);
   maxSlider.addEventListener('input', drawStrokes);
   densitySlider.addEventListener('input', function() {
     updateDensityDisplay();
-    drawStrokes(); // Make sure the strokes are redrawn when density slider changes
+    drawStrokes();
+  });
+
+  // Event listener for the angle slider and input
+  angleSlider.addEventListener('input', function() {
+    updateAngleDisplay();
+    drawStrokes();  // Redraw when angle changes
+  });
+
+  angleInput.addEventListener('input', function() {
+    const angleValue = parseFloat(angleInput.value);
+    angleSlider.value = map(angleValue, -90, 90, -PI / 2, PI / 2); // Map input to slider range
+    drawStrokes();  // Redraw when angle input changes
   });
 
   document.getElementById('imgInput').addEventListener('change', handleImageUpload);
@@ -31,34 +47,13 @@ function updateDensityDisplay() {
   densityDisplay.textContent = densitySlider.value;
 }
 
-// Initialize the sliders and input fields
-const minLengthSlider = document.getElementById("minLength");
-const maxLengthSlider = document.getElementById("maxLength");
-const minLengthInput = document.getElementById("minLengthInput");
-const maxLengthInput = document.getElementById("maxLengthInput");
+// Function to update the angle display (convert slider value to degrees)
+function updateAngleDisplay() {
+  const angleValue = angleSlider.value;
+  angleInput.value = map(angleValue, -PI / 2, PI / 2, -90, 90).toFixed(1); // Convert to degrees
+}
 
-// Update the slider min/max values when the input fields change
-minLengthInput.addEventListener("input", function() {
-  const minValue = parseInt(minLengthInput.value);
-  minLengthSlider.min = minValue; // Update the slider's min value
-  minLengthSlider.value = minValue; // Set the slider value to the new min
-});
-
-maxLengthInput.addEventListener("input", function() {
-  const maxValue = parseInt(maxLengthInput.value);
-  maxLengthSlider.max = maxValue; // Update the slider's max value
-  maxLengthSlider.value = maxValue; // Set the slider value to the new max
-});
-
-// Update the input fields when the sliders change
-minLengthSlider.addEventListener("input", function() {
-  minLengthInput.value = minLengthSlider.value; // Update the input to match the slider value
-});
-
-maxLengthSlider.addEventListener("input", function() {
-  maxLengthInput.value = maxLengthSlider.value; // Update the input to match the slider value
-});
-
+// Image upload handler
 function handleImageUpload(e) {
   const file = e.target.files[0];
   if (file && file.type.startsWith('image')) {
@@ -70,6 +65,7 @@ function handleImageUpload(e) {
   }
 }
 
+// Process the uploaded image
 function imgLoaded(loadedImage) {
   img = loadedImage;
 
@@ -106,6 +102,7 @@ function imgLoaded(loadedImage) {
   drawStrokes();
 }
 
+// Function to draw strokes on the canvas
 function drawStrokes() {
   clear();
   background(bgColor);
@@ -117,6 +114,7 @@ function drawStrokes() {
   let minLen = parseInt(minSlider.value);
   let maxLen = parseInt(maxSlider.value);
   let density = parseInt(densitySlider.value) / 100;
+  let angleControl = parseFloat(angleSlider.value); // Get angle from slider
 
   const numToDraw = int(density * pixelData.length);
   for (let i = 0; i < numToDraw; i++) {
@@ -125,7 +123,7 @@ function drawStrokes() {
     let h = hue(col);
 
     let baseAngle = map(h, 0, 360, 0, TWO_PI);
-    let angle = baseAngle + random(-PI / 6, PI / 6);
+    let angle = baseAngle + angleControl; // Apply angle control here
 
     let len = random(minLen, maxLen);
     let cx = p.x + offsetX;
@@ -150,15 +148,15 @@ function drawStrokes() {
   }
 }
 
+// Function to export the canvas as a PNG with transparency
 function exportTransparentPNG() {
-  // Temporarily clear background to make export transparent
   clear(); // clears with alpha
   if (img) drawStrokesWithoutBackground();
   saveCanvas('myCanvas', 'png');
-  // Redraw with visible background
   drawStrokes();
 }
 
+// Function to draw strokes without background for export
 function drawStrokesWithoutBackground() {
   if (!img) return;
 
@@ -168,6 +166,7 @@ function drawStrokesWithoutBackground() {
   let minLen = parseInt(minSlider.value);
   let maxLen = parseInt(maxSlider.value);
   let density = parseInt(densitySlider.value) / 100;
+  let angleControl = parseFloat(angleSlider.value); // Get angle from slider
 
   const numToDraw = int(density * pixelData.length);
   for (let i = 0; i < numToDraw; i++) {
@@ -176,7 +175,7 @@ function drawStrokesWithoutBackground() {
     let h = hue(col);
 
     let baseAngle = map(h, 0, 360, 0, TWO_PI);
-    let angle = baseAngle + random(-PI / 6, PI / 6);
+    let angle = baseAngle + angleControl;
 
     let len = random(minLen, maxLen);
     let cx = p.x + offsetX;
@@ -201,6 +200,7 @@ function drawStrokesWithoutBackground() {
   }
 }
 
+// Window resize handling
 function windowResized() {
   resizeCanvas(windowWidth - MARGIN * 2, windowHeight - MARGIN * 2);
   canvas.position(MARGIN, MARGIN);
